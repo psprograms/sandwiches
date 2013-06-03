@@ -1,0 +1,38 @@
+<div class="container">
+  <div class="hero-unit">
+    <h1>Administrative Options</h1><br>
+    <div id="message">
+      <% if @message != "" && @message != nil %>
+        <%= @message.inspect %>
+      <% end %>
+    </div>
+    <form action='<%= url('/submit_options') %>' method="POST">
+      <label for="maxOrders">Maximum Number of Orders Per Day</label>
+      <input id="maxOrders" type="text" name="maxOrders" value="<%= @cmaxOrders.value %>"><br>
+      <label for="startTime">Start Time</label>
+      <input id="startTime" type="text" name="startTime" value="<%= @startTime.hour.to_s + ':' + @startTime.min.to_s %>">
+      <select id="startAMPM" name="startAMPM">
+        <% if @startAMPM == 'AM' %>
+            <option value="AM" selected="selected">AM</option>
+            <option value="PM">PM</option>
+        <% else %>
+            <option value="AM">AM</option>
+            <option value="PM" selected="selected">PM</option>
+        <% end %>
+      </select><br>
+      <label for="endTime">End Time</label>
+      <input id="endTime" type="text" name="endTime" value="<%= @endTime.hour.to_s + ':' + @endTime.min.to_s %>">
+      <select id="endAMPM" name="endAMPM">
+        <% if @endAMPM == 'AM' %>
+            <option value="AM" selected="selected">AM</option>
+            <option value="PM">PM</option>
+        <% else %>
+            <option value="AM">AM</option>
+            <option value="PM" selected="selected">PM</option>
+        <% end %>
+      </select><br><br>
+      <input id="optionsSubmit" class="btn btn-primary" type="submit" name="optionsSubmit" value="Update">
+    </form>
+    <a href="<%= url("/lunch_console") %>"><button class="option btn" id="orders">Return to Lunch Console</button></a>
+  </div>
+</div>

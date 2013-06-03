@@ -1,0 +1,15 @@
+<link rel='stylesheet' href="css/lunch_console.css">
+<script type="text/javascript" src="js/lunch_console.js"></script>
+<div class="container">
+  <div class="hero-unit">
+    <h1 class="center">Lunch Console</h1>
+    <h4 class="center">Please choose an option from those provided below.</h4>
+    <div class="center">
+      <div id="main-area span12">
+        <a href='<%= url("/orders")%>'><button class="option btn btn-primary" id="orders">View Orders</button></a>
+        <a href='<%= url("/supplies")%>'><button class="option btn btn-primary" id="supplies">View/Change Supplies</button></a>
+        <a href='<%= url("/admin_options")%>'><button class="option btn btn-primary" id="admin">Administrative Options</button></a>
+      </div>
+    </div>
+  </div>
+</div>

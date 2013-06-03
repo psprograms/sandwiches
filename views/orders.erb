@@ -1,0 +1,89 @@
+<% def numList(food) %>
+    <td>
+      <ul class='unstyled'>
+        <% if food.class == String %>
+            <% food.split(', ').each do |x| %>
+                <li><%= x %></li>
+            <% end %>
+        <% end %>
+      </ul>
+    </td>
+<% end %>
+
+<div>
+  <div class="hero-unit">
+    <h2 class="centerText">Orders</h2>
+    <form action='<%= url('/update_pickups') %>' method="POST">
+        <table class="table table-striped table-condensed table-bordered">
+            <thead>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Name</th>
+                <th>Student ID</th>
+                <th>Bread</th>
+                <th>Meats</th>
+                <th>Cheeses</th>
+                <th>Toppings</th>
+                <th>Dressings</th>
+                <th>Toasted</th>
+                <th>Picked Up</th>
+                <th>Clone</th>
+            </thead>
+            <tbody>
+                <% @orders.each do |order| %>
+                    <tr>
+                        <td><%= order.date %></td>
+                        <td><%= order.time %></td>
+                        <td><%= order.name %></td>
+                        <td><%= order.studentID %></td>
+                        <td><%= order.bread %></td>
+                        <% numList(order.meats) %>
+                        <% numList(order.cheeses) %>
+                        <% numList(order.toppings) %>
+                        <% numList(order.dressings) %>
+                        <td><%= order.toasted %></td>
+                        <td>
+                          <%
+                             pickedUp = order.pickedUp
+                             if session[:studentID] == "michael.adler.a" || session[:studentID] == "pstakoff"
+                               if pickedUp == "Yes"
+                                 showCheck =  "<input type='checkbox' name='pickedUpArray[]' value='#{order.id}' checked>"
+                               else
+                                 showCheck = "<input type='checkbox' name='pickedUpArray[]' value='#{order.id}'>"
+                               end
+                             else
+                               if pickedUp == "Yes"
+                                 showCheck =  "Yes"
+                               else
+                                 showCheck =  "No"
+                               end
+                             end
+			%>
+                          <%= showCheck %>
+                        </td>
+                        <td>
+                          <a href='<%=url("/clone_order?id=#{order.id}") %>'>Clone</a>
+                          <!--<form method="post" action='<%= url('/send_order') %>'>
+                            <input type="hidden" name="bread" value="<%= order.bread %>">
+                            <input type="hidden" name="meats" value="<%= order.meats %>">
+                            <input type="hidden" name="cheeses" value="<%= order.cheeses %>">
+                            <input type="hidden" name="toppings" value="<%= order.toppings %>">
+                            <input type="hidden" name="dressings" value="<%= order.dressings %>">
+                            <input type="hidden" name="toasted" value="<%= order.toasted %>">
+                            <button type="submit" class='btn'>Clone Order</button>
+                          </form>-->
+                        </td>
+                    </tr>
+                <% end %>
+            </tbody>
+        </table>
+        <% if admin? %>
+            <button type='submit' class='btn btn-primary'>Update</button>
+            </form>
+            <a href='<%= url("/lunch_console")%>'><button class='option btn' id='console'>Return to Lunch Console</button></a>
+        <% else %>
+            </form>
+            <a href='<%= url("/profile")%>'><button class='option btn' id='orders'>Return to Profile</button></a>
+        <% end %>
+  </div>
+</div>

@@ -1,0 +1,80 @@
+<link rel='stylesheet' href="css/supplies.css">
+<script type="text/javascript" src="js/supplies.js"></script>
+<% def list(obj, type, route) %>
+    <h3><%= type %></h3>
+    <table class="table table-striped table-bordered table-condensed center">
+      <thead>
+      <th>Name</th>
+      <th>In Stock</th>
+      <th>Delete</th>
+      </thead>
+      <tbody>
+      <% obj.each do |supply| %>
+          <tr>
+            <td><%= supply.name %></td>
+            <td>
+              <%
+                 inStock = supply.inStock
+                 if inStock == "Yes"
+                   showCheck =  "<input type='checkbox' name='stockArray[]' value='#{supply.id}' checked>"
+                 elsif inStock =="No"
+                   showCheck =  "<input type='checkbox' name='stockArray[]' value='#{supply.id}'>"
+                 else
+                   showCheck = "error"
+                 end
+              %>
+              <%= showCheck %>
+            </td>
+            <td><a href='<%=url("#{route}?id=#{supply.id}")%>'>Delete</a></td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+<% end %>
+
+<div class="container">
+  <div class="hero-unit">
+       <h2>Update Supplies</h2>
+        <form class="center" action='<%= url('/update_supplies') %>' method="POST">
+
+       <%
+          list(@breads, 'Breads', '/delete_supply')
+          list(@meats, 'Meats', '/delete_supply')
+          list(@cheeses, 'Cheeses', '/delete_supply')
+          list(@toppings, 'Toppings', '/delete_supply')
+          list(@dressings, 'Dressings', '/delete_supply')
+        %>
+        <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+        <h2>Update Pre-Made Sandwiches</h2>
+        <form class="center" action='<%= url('/update_pre-made') %>' method="POST">
+          <%
+             list(@prepared, 'Prepared Sandwiches', '/delete_pre-made')
+          %>
+          <button type="submit" class="btn btn-primary">Update</button>
+        </form>
+    </div>
+        <div class="hero-unit">
+            <h2>Add Supplies</h2>
+            <form class="center" action='<%= url('/add_supply') %>' method="POST">
+                <input type="text" name="name" placeholder="Name" />
+                <select name="type">
+                    <option value="Bread">Bread</option>
+                    <option value="Meat">Meat</option>
+                    <option value="Cheese">Cheese</option>
+                    <option value="Topping">Topping</option>
+                    <option value="Dressing">Dressing</option>
+                </select>
+                <br />
+            <button type="submit" class="btn btn-primary">Add Supply</button>
+            </form>
+            <h2>Add Pre-Made Sandwiches</h2>
+            <form class="center" action='<%= url('/add_pre-made') %>' method="GET">
+              <button type="submit" class="btn btn-primary">Add Sandwich</button>
+            </form>
+          <a href='<%= url('/lunch_console') %>'><button class="option btn" id="orders">Return to Lunch Console</button></a>
+        </div>
+        <div>
+
+        </div>
+</div>

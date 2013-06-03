@@ -1,0 +1,64 @@
+<html>
+     <head>
+           <title><%= @title ? @title : "Untitled" %></title>
+           <!-- <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/css/bootstrap-combined.min.css" rel="stylesheet" type="text/css"> -->
+           <link href='<%= url('/bootstrap/css/bootstrap.css') %>' rel="stylesheet">
+           <link href='<%= url('/css/custom.css') %>' rel="stylesheet">
+	   <script src='<%= '//ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js' %>' type="text/javascript"></script>
+           <script src='<%= '//netdna.bootstrapcdn.com/twitter-bootstrap/2.1.0/js/bootstrap.min.js' %>' type="text/javascript"></script>
+           <!-- <script src="/bootstrap/js/bootstrap.min.js"></script> -->
+    </head>
+<body>
+    <!-- <header>
+            <img class="headIMG" id="shs_logo" src="img/shs_logo.jpg" />
+         </header> -->
+
+    <div id="navbar" class="navbar navbar-static">
+      <div class="navbar-inner">
+        <div class="container" style="width: auto;">
+          <a class="brand" href="#">Sandwich Pre-Order</a>
+          <ul class="nav">
+            <li><a href="<%= url("/info") %>">Home</a></li>
+          </ul>
+          <% if session[:studentID] != nil %>
+              <ul class="nav">
+                  <% if session[:studentID] != 'michael.adler.a' and session[:studentID] != 'pstakoff' %>
+                    <% @choicePath = '/send_order' %>
+                    <%= "<li><a href='#{url("/profile")}'>Profile</a></li>" %>
+                    <%= "<li><a href='#{url("/make_choices")}'>Place Order</a></li>" %>
+                    <%= "<li><a href='#{url("/orders")}'>View Order History</a></li>" %>
+                 <% else %>
+                    <%= "<li><a href='#{url("/lunch_console")}'>Lunch Console</a></li>" %>
+                    <%= "<li><a href='#{url("/orders")}'>View Orders</a></li>" %>
+                    <%= "<li><a href='#{url("/supplies")}'>Inventory</a></li>" %>
+                    <%= "<li><a href='#{url("/admin_options")}'>Options</a></li>" %>
+                 <% end %>
+              </ul>
+              <ul class="nav pull-right">
+                <li class="dropdown">
+                  <a href="#" role="button" class="dropdown-toggle" data-toggle="dropdown"><%= "#{session[:name]} (#{session[:studentID]})" ? "#{session[:name]} (#{session[:studentID]})" : "" %><b class="caret"></b></a>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="drop3">
+                    <!--<li role="presentation" class="divider"></li>-->
+                    <li role="presentation"><a role="menuitem" tabindex="-1" href='<%= url("/logout")%>'>Logout</a></li>
+                  </ul>
+                </li>
+              </ul>
+          <%
+            else
+          %>
+              <ul class="nav pull-right">
+                <li><a href='<%= url("/login")%>'>Login</a></li>
+              </ul>
+          <%
+             end
+          %>
+        </div>
+      </div>
+    </div>
+
+    <%= yield %>
+    <footer>
+      <p class='centerText finePrint'>This website is currently maintained by Michael Adler '13 and Parker Stakoff '14.<br />Revised: June 1st, 2013</p>
+    </footer>
+</body>
+</html>

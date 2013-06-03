@@ -1,0 +1,69 @@
+<script type="text/javascript" src='<%= url('js/make_order.js') %>'></script>
+<link rel="stylesheet" type="text/css" href='<%= url('css/make_choices.css') %>'>
+<div class="container-fluid">
+  <div class="hero-unit">
+    <div id="toppings">
+      <form name="order" id="orderForm" action='<%=url("#{@choicePath}") %>' method="POST">
+        <% if @choicePath == '/commit_pre-made' %>
+            <div id="nameDiv">
+                <label id="nameLabel" for="name">Name of Pre-Made Sandwich:</label>
+                  <input placeholder="Name" type="text" name="name">
+            </div><br>
+        <% end %>
+        <h3>Check the toppings that you want.</h3>
+        <h5 class="title">Bread</h5>
+        <fieldset id="bread">
+            <% Supply.breads.each do |bread| %>
+                <label class="radio">
+                  <input class="option" type="radio" name="bread" value="<%=bread.name%>"> <%= bread.name %>
+                </label>
+            <% end %>
+        </fieldset>
+          <!-- br /-->
+        <h5 class="title">Meats</h5>
+        <fieldset id="meats">
+            <% Supply.meats.each do |meat| %>
+                <label class="checkbox">
+                  <input class="option" type="checkbox" name="meats[]" value="<%=meat.name%>"> <%= meat.name %>
+                </label>
+            <% end %>
+        </fieldset>
+        <!-- br /-->
+        <h5 class="title">Cheeses</h5>
+        <fieldset id="cheeses">
+            <% Supply.cheeses.each do |cheese| %>
+                <label class="checkbox">
+                  <input class="option" type="checkbox" name="cheeses[]" value="<%=cheese.name%>"> <%= cheese.name %>
+                </label>
+            <% end %>
+        </fieldset>
+        <!-- br /-->
+        <h5 class="title">Toppings</h5>
+        <fieldset id="topping">
+            <% Supply.toppings.each do |topping| %>
+                <label class="checkbox">
+                  <input class="option" type="checkbox" name="toppings[]" value="<%=topping.name%>"> <%= topping.name %>
+                </label>
+            <% end %>
+        </fieldset>
+        <!-- br /-->
+        <h5 class="title">Dressings</h5>
+        <fieldset id="dressings">
+            <% Supply.dressings.each do |dressing| %>
+                <label class="checkbox">
+                  <input class="option" type="checkbox" name="dressings[]" value="<%=dressing.name%>"> <%= dressing.name %>
+                </label>
+            <% end %>
+         </fieldset>
+        <!-- br /-->
+        <h5 class="title">Toasted?</h5>
+        <fieldset id="toasted">
+            <label class="radio"><input class="option" type="radio" name="toasted" value="Yes" />Yes</label>
+            <label class="radio"><input class="option" type="radio" name="toasted" value="No" />No</label>
+        </fieldset>
+        <!-- br /-->
+          <button type="submit" class="btn">Submit</button>
+      </form>
+    </div>
+  </div>
+</div>
