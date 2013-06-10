@@ -61,17 +61,23 @@ class Routes < Sinatra::Base
     toasted = theOrder.toasted
 
     @maxOrders = Options.first(:optionName => 'Order Maximum').value.to_i
-    uniqName = Order.all(:studentID => session[:studentID])
+    uniqName = Order.all(:studentID => session[:studentID], :date => Time.now.strftime('%m/%d/%y') )
     nameCount = uniqName.count
 
     if nameCount >= @maxOrders
       redirect url('/order_filled')
     end
 
-    startTime = Time.parse(Options.first(:optionName => 'Start Time').value)
-    endTime = Time.parse(Options.first(:optionName => 'End Time').value)
+    startTime = Options.first(:optionName => 'Start Time').value.to_i
+    endTime = Options.first(:optionName => 'End Time').value.to_i
 
-    if Time.now < startTime || Time.now > endTime
+    currTime = Time.now
+    currTimeFrm = Time.now.strftime("%l:%M")
+    currAMPM = currTime.strftime("%p")
+    
+    currTimeSec = currTimeFrm.seconds_from_midnight(currAMPM)    
+
+    if currTimeSec.cmp_times(startTime) == -1 || currTimeSec.cmp_times(endTime) == 1
       redirect url('/time_range')
     end
 
@@ -120,10 +126,16 @@ class Routes < Sinatra::Base
   end
 
   get '/delete_order' do
-    startTime = Time.parse(Options.first(:optionName => 'Start Time').value)
-    endTime = Time.parse(Options.first(:optionName => 'End Time').value)
+    startTime = Options.first(:optionName => 'Start Time').value.to_i
+    endTime = Options.first(:optionName => 'End Time').value.to_i
 
-    if Time.now < startTime || Time.now > endTime
+    currTime = Time.now
+    currTimeFrm = Time.now.strftime("%l:%M")
+    currAMPM = currTime.strftime("%p")
+    
+    currTimeSec = currTimeFrm.seconds_from_midnight(currAMPM)    
+
+    if currTimeSec.cmp_times(startTime) == -1 || currTimeSec.cmp_times(endTime) == 1
       redirect url('/time_range')
     end
 
@@ -159,10 +171,16 @@ class Routes < Sinatra::Base
       redirect url('/order_filled')
     end
 
-    startTime = Time.parse(Options.first(:optionName => 'Start Time').value)
-    endTime = Time.parse(Options.first(:optionName => 'End Time').value)
+    startTime = Options.first(:optionName => 'Start Time').value.to_i
+    endTime = Options.first(:optionName => 'End Time').value.to_i
 
-    if Time.now < startTime || Time.now > endTime
+    currTime = Time.now
+    currTimeFrm = Time.now.strftime("%l:%M")
+    currAMPM = currTime.strftime("%p")
+    
+    currTimeSec = currTimeFrm.seconds_from_midnight(currAMPM)    
+
+    if currTimeSec.cmp_times(startTime) == -1 || currTimeSec.cmp_times(endTime) == 1
       redirect url('/time_range')
     else
       Order.create(:date => Time.now.strftime('%m/%d/%y'), :time => Time.now.strftime('%r'), :name => session[:name], :studentID => session[:studentID], :bread => @bread, :meats => @meats, :cheeses => @cheeses, :toppings => @toppings, :dressings => @dressings, :toasted => @toasted, :pickedUp => 'No')
@@ -274,7 +292,7 @@ class Routes < Sinatra::Base
 
   get '/options_error' do
     @error = "Invalid options entered. You must enter an integer greater than zero into the max orders field.<br>
-  		The two time fields must be in 12-hour format with no trailing zeroes.<br>
+  		The two time fields must be in 12-hour format with no trailing zeroes on the same calendar day.<br>
 		<a href=#{url('/admin_options')}>Click here to try again.</a>"
     erb :error
   end
@@ -419,26 +437,14 @@ class Routes < Sinatra::Base
     elsif admin?
       @title = "Administrative Options"
       @cmaxOrders = Options.first(:optionName => "Order Maximum")
-      @startTime = Time.parse(Options.first(:optionName => "Start Time").value)
-      @endTime = Time.parse(Options.first(:optionName => "End Time").value)
+      @startTime = Options.first(:optionName => "Start Time").value.to_i
+      @endTime = Options.first(:optionName => "End Time").value.to_i
 
-      @startHours = @startTime.hour
-      if @startHours > 12
-        @startTime = @startTime + 43200
-        @startAMPM = 'PM'
-      else
-        @startAMPM = 'AM'
-      end
-
-      @endHours = @endTime.hour
-      if @endHours.to_i > 12
-        @endTime = @endTime + 43200
-        @endAMPM = 'PM'
-      else
-        @endAMPM = 'AM'
-      end
+      @startSecTime = @startTime.to_readable
+      @endSecTime = @endTime.to_readable
 
       erb :admin_options
+    
     else
       @title = 'Access Denied'
       @error = 'Access denied. You do not have permission to view this page.'
@@ -451,29 +457,23 @@ class Routes < Sinatra::Base
       @cmaxOrders = Options.first(:optionName => "Order Maximum")
       @cmaxOrders.update(:value => params[:maxOrders].to_i)
 
-      @nowTime = Time.now()
-      @timeRange = [params[:startTime].split(':'), params[:endTime].split(':')]
-      @startTime = Time.new(@nowTime.year, @nowTime.month, @nowTime.day, @timeRange[0][0].to_i, @timeRange[0][1].to_i)
+      @startTime = params[:startTime]
+      @endTime = params[:endTime]
+
       @startAMPM = params[:startAMPM]
-      @endTime = Time.new(@nowTime.year, @nowTime.month, @nowTime.day, @timeRange[1][0].to_i, @timeRange[1][1].to_i)
       @endAMPM = params[:endAMPM]
 
-      if @startAMPM == "PM"
-        @startTime = @startTime + 43200
-      end
+      @startSecTime = @startTime.seconds_from_midnight(@startAMPM)
+      @endSecTime = @endTime.seconds_from_midnight(@endAMPM)
 
-      if @endAMPM == "PM"
-        @endTime = @endTime + 43200
-      end
-
-      if @startTime > @endTime
-        redirect url('/options_error')
+      if @startSecTime >= @endSecTime
+      	redirect url('/options_error')
       end
 
       @start = Options.first(:optionName => "Start Time")
       @end = Options.first(:optionName => "End Time")
-      @start.update(:value => @startTime)
-      @end.update(:value => @endTime)
+      @start.update(:value => @startSecTime.to_s)
+      @end.update(:value => @endSecTime.to_s)
     else
 	redirect url('/options_error')
     end

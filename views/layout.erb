@@ -28,7 +28,7 @@
                     <%= "<li><a href='#{url("/make_choices")}'>Place Order</a></li>" %>
                     <%= "<li><a href='#{url("/orders")}'>View Order History</a></li>" %>
                  <% else %>
-                    <%= "<li><a href='#{url("/lunch_console")}'>Lunch Console</a></li>" %>
+                    <%= "<li><a href='#{url("/lunch_console")}'>Lunch Dashboard</a></li>" %>
                     <%= "<li><a href='#{url("/orders")}'>View Orders</a></li>" %>
                     <%= "<li><a href='#{url("/supplies")}'>Inventory</a></li>" %>
                     <%= "<li><a href='#{url("/admin_options")}'>Options</a></li>" %>
@@ -58,7 +58,7 @@
 
     <%= yield %>
     <footer>
-      <p class='centerText finePrint'>This website is currently maintained by Michael Adler '13 and Parker Stakoff '14.<br />Revised: June 1st, 2013</p>
+      <p class='centerText finePrint'>This website was created by Michael Adler '13 and Parker Stakoff '14.<br />Revised: June 4th, 2013</p>
     </footer>
 </body>
 </html>

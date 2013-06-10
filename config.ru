@@ -23,5 +23,6 @@ require './controllers.rb'
 require './helpers.rb'
 require './models.rb'
 #require './seed.rb'
+require './admin_options.rb'
 
 run Routes

@@ -1,4 +1,5 @@
-DataMapper.setup(:default, "sqlite3://#{Dir.pwd}/sandwiches.db")
+#DataMapper.setup(:default, "sqlite://#{Dir.pwd}/sandwiches.db")
+DataMapper.setup(:default, "postgres://wwwrun:nurwww@127.0.0.1:5432/sandwiches")
 
 class Supply
   include DataMapper::Resource

@@ -1,18 +1,14 @@
 <div class="container">
   <div class="hero-unit">
     <h1>Administrative Options</h1><br>
-    <div id="message">
-      <% if @message != "" && @message != nil %>
-        <%= @message.inspect %>
-      <% end %>
-    </div>
+    <p><i>If you do not want to enforce a time constraint on orders, then enter "12:00 AM" in the Start Time field and "11:59 PM" in the End Time Field.</i></p>
     <form action='<%= url('/submit_options') %>' method="POST">
       <label for="maxOrders">Maximum Number of Orders Per Day</label>
       <input id="maxOrders" type="text" name="maxOrders" value="<%= @cmaxOrders.value %>"><br>
       <label for="startTime">Start Time</label>
-      <input id="startTime" type="text" name="startTime" value="<%= @startTime.hour.to_s + ':' + @startTime.min.to_s %>">
+      <input id="startTime" type="text" name="startTime" value="<%= @startSecTime[0] %>">
       <select id="startAMPM" name="startAMPM">
-        <% if @startAMPM == 'AM' %>
+        <% if @startSecTime[1] == 'AM' %>
             <option value="AM" selected="selected">AM</option>
             <option value="PM">PM</option>
         <% else %>
@@ -21,9 +17,9 @@
         <% end %>
       </select><br>
       <label for="endTime">End Time</label>
-      <input id="endTime" type="text" name="endTime" value="<%= @endTime.hour.to_s + ':' + @endTime.min.to_s %>">
+      <input id="endTime" type="text" name="endTime" value="<%= @endSecTime[0] %>">
       <select id="endAMPM" name="endAMPM">
-        <% if @endAMPM == 'AM' %>
+        <% if @endSecTime[1] == 'AM' %>
             <option value="AM" selected="selected">AM</option>
             <option value="PM">PM</option>
         <% else %>
@@ -33,6 +29,6 @@
       </select><br><br>
       <input id="optionsSubmit" class="btn btn-primary" type="submit" name="optionsSubmit" value="Update">
     </form>
-    <a href="<%= url("/lunch_console") %>"><button class="option btn" id="orders">Return to Lunch Console</button></a>
+    <a href="<%= url("/lunch_console") %>"><button class="option btn" id="orders">Return to Lunch Dashboard</button></a>
   </div>
 </div>
