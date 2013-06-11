@@ -43,7 +43,7 @@ class Routes < Sinatra::Base
     elsif session[:studentID] == nil
       redirect url('/login')
     else
-      @orders = Order.all()
+      @orders = Order.all(:date => Time.now.strftime("%m/%d/%y"))
     end
 
     erb :orders

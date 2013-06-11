@@ -22,7 +22,7 @@
           </ul>
           <% if session[:studentID] != nil %>
               <ul class="nav">
-                  <% if session[:studentID] != 'michael.adler.a' and session[:studentID] != 'pstakoff' %>
+                  <% if !admin? %>
                     <% @choicePath = '/send_order' %>
                     <%= "<li><a href='#{url("/profile")}'>Profile</a></li>" %>
                     <%= "<li><a href='#{url("/make_choices")}'>Place Order</a></li>" %>

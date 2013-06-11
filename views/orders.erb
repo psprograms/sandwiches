@@ -45,7 +45,7 @@
                         <td>
                           <%
                              pickedUp = order.pickedUp
-                             if session[:studentID] == "michael.adler.a" || session[:studentID] == "pstakoff"
+                             if admin?
                                if pickedUp == "Yes"
                                  showCheck =  "<input type='checkbox' name='pickedUpArray[]' value='#{order.id}' checked>"
                                else
