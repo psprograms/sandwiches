@@ -61,10 +61,14 @@ class Routes < Sinatra::Base
     toasted = theOrder.toasted
 
     @maxOrders = Options.first(:optionName => 'Order Maximum').value.to_i
+    @totMaxOrders = Options.first(:optionName => 'Total Order Maximum').value.to_i
+
     uniqName = Order.all(:studentID => session[:studentID], :date => Time.now.strftime('%m/%d/%y') )
     nameCount = uniqName.count
 
-    if nameCount >= @maxOrders
+    totOrdersToday = Order.all(:date => Time.now.strftime('%m/%d/%y')).count
+
+    if nameCount >= @maxOrders or totOrdersToday >= @totMaxOrders
       redirect url('/order_filled')
     end
 
@@ -156,6 +160,7 @@ class Routes < Sinatra::Base
     end
 
     @maxOrders = Options.first(:optionName => 'Order Maximum').value.to_i
+    @totMaxOrders = Options.first(:optionName => 'Total Order Maximum').value.to_i
 
     @bread = params[:bread]
     @meats = isArray(params[:meats])
@@ -167,7 +172,9 @@ class Routes < Sinatra::Base
     uniqName = Order.all(:studentID => session[:studentID], :date => Time.now.strftime('%m/%d/%y') )
     nameCount = uniqName.count
 
-    if nameCount >= @maxOrders
+    totOrdersToday = Order.all(:date => Time.now.strftime('%m/%d/%y')).count
+
+    if nameCount >= @maxOrders or totOrdersToday >= @totMaxOrders
       redirect url('/order_filled')
     end
 
@@ -281,7 +288,7 @@ class Routes < Sinatra::Base
   end
 
   get '/order_filled' do
-    @error = "You already have the maximum number of orders placed for your account. <a href=#{url('/profile')}>Click here to view your current orders.</a>"
+    @error = "Either you already have the maximum number of orders placed for your account or the total number of orders for today has reached the maximum. <a href=#{url('/profile')}>Click here to view your current orders.</a>"
     erb :error
   end
 
@@ -291,8 +298,10 @@ class Routes < Sinatra::Base
   end
 
   get '/options_error' do
-    @error = "Invalid options entered. You must enter an integer greater than zero into the max orders field.<br>
-  		The two time fields must be in 12-hour format with no trailing zeroes on the same calendar day.<br>
+    @error = "Invalid options entered.<br><br>
+		You must enter an integer greater than zero into the max orders fields.<br><br>
+		The maximum number of orders per student per day may not exceed the maximum number of orders per day.<br><br>
+  		The two time fields must be in 12-hour format with no trailing zeroes on the same calendar day.<br><br>
 		<a href=#{url('/admin_options')}>Click here to try again.</a>"
     erb :error
   end
@@ -436,7 +445,9 @@ class Routes < Sinatra::Base
       redirect url('/login')
     elsif admin?
       @title = "Administrative Options"
+      
       @cmaxOrders = Options.first(:optionName => "Order Maximum")
+      @totMaxOrders = Options.first(:optionName => "Total Order Maximum")
       @startTime = Options.first(:optionName => "Start Time").value.to_i
       @endTime = Options.first(:optionName => "End Time").value.to_i
 
@@ -453,9 +464,12 @@ class Routes < Sinatra::Base
   end
 
   post '/submit_options' do
-    if params[:maxOrders].match(/^[1-9][0-9]?$/) && params[:startTime].match(/^((1{1}[0-2])|([1-9])):[0-5][0-9]$/) && params[:endTime].match(/^((1{1}[0-2])|([1-9])):[0-5][0-9]$/)
+    if params[:maxOrders].match(/^[1-9][0-9]?$/) && params[:totMaxOrders].match(/^[1-9][0-9]?$/) && params[:maxOrders].to_i <= params[:totMaxOrders].to_i && params[:startTime].match(/^((1{1}[0-2])|([1-9])):[0-5][0-9]$/) && params[:endTime].match(/^((1{1}[0-2])|([1-9])):[0-5][0-9]$/)
       @cmaxOrders = Options.first(:optionName => "Order Maximum")
       @cmaxOrders.update(:value => params[:maxOrders].to_i)
+
+      @totMaxOrders = Options.first(:optionName => "Total Order Maximum")
+      @totMaxOrders.update(:value => params[:totMaxOrders].to_i)
 
       @startTime = params[:startTime]
       @endTime = params[:endTime]
