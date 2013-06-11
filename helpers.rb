@@ -13,7 +13,7 @@ class Routes < Sinatra::Base
     end
 
     def admin?
-      ['michael.adler.a', 'pstakoff'].include? session[:studentID]
+      ['michael.adler.a', 'pstakoff', 'staples.lunch'].include? session[:studentID]
     end
 
     def openid_consumer
