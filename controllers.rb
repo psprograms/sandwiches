@@ -51,7 +51,7 @@ class Routes < Sinatra::Base
 
   get '/clone_order' do
     id = params[:id]
-    theOrder = Order.get(id)
+    theOrder = Order.first(:id => id, :studentID => session[:studentID])
 
     bread = theOrder.bread
     meats = theOrder.meats
@@ -140,7 +140,7 @@ class Routes < Sinatra::Base
     end
 
     id = params[:id]
-    theOrder = Order.all(:id => id)
+    theOrder = Order.all(:id => id, :studentID => session[:studentID])
 
     theOrder.destroy
 
