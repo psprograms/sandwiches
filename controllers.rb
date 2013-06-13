@@ -256,7 +256,7 @@ class Routes < Sinatra::Base
 
           emailAry = session[:email].split("@")
           domain = emailAry[1]
-          if domain != 'students.westport.k12.ct.us' && domain != 'westport.k12.ct.us' && session[:email] != 'michael.adler.a@gmail.com' && session[:email] != 'pstakoff@gmail.com' && session[:email] != 'staples.lunch@gmail.com'
+          if domain != 'students.westport.k12.ct.us' && domain != 'westport.k12.ct.us' && !okemail?
             redirect url('/staples')
           else
             studentID = emailAry[0]

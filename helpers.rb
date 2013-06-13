@@ -9,11 +9,11 @@ class Routes < Sinatra::Base
     end
 
     def okemail?
-      ['michael.adler.a@gmail.com','pstakoff@gmail.com'].include? session[:email]
+      ['michael.adler.a@gmail.com', 'michaeladler1228@gmail.com', 'madler1@brandeis.edu', 'pstakoff@gmail.com', 'staples.lunch@gmail.com'].include? session[:email]
     end
 
     def admin?
-      ['michael.adler.a', 'pstakoff', 'staples.lunch'].include? session[:studentID]
+      ['michael.adler.a', 'michaeladler1228', 'madler1', 'pstakoff', 'staples.lunch'].include? session[:studentID]
     end
 
     def openid_consumer
