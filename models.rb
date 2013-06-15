@@ -1,5 +1,5 @@
-#DataMapper.setup(:default, "sqlite://#{Dir.pwd}/sandwiches.db")
-DataMapper.setup(:default, "postgres://wwwrun:nurwww@127.0.0.1:5432/sandwiches")
+@dburl = `cat ~wwwrun/.profile`
+DataMapper.setup(:default, @dburl.to_s.chomp + '/sandwiches')
 
 class Supply
   include DataMapper::Resource
